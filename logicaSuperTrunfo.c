@@ -1,4 +1,5 @@
-#include <stdio.h> 
+
+#include <stdio.h>
 #include <string.h>
 
 // Estrutura da carta Super Trunfo
@@ -66,35 +67,85 @@ void exibirCarta(struct CartaSuperTrunfo carta) {
     printf("------------------------------------\n");
 }
 
-// Função para comparar duas cartas
-void compararCartas(struct CartaSuperTrunfo c1, struct CartaSuperTrunfo c2) {
-    printf("\nDados das Cartas:\n");
-    exibirCarta(c1);
-    exibirCarta(c2);
+// Função para comparar duas cartas com base no atributo escolhido pelo usuário
+void compararCartas(struct CartaSuperTrunfo c1, struct CartaSuperTrunfo c2, int opcao) {
+    float valor1, valor2;
+    printf("\nComparação entre %s e %s\n", c1.nomeCidade, c2.nomeCidade);
     
-    printf("\nComparacão de Cartas (Atributo: População)\n");
-    printf("Carta 1 - %s (%c): %lu\n", c1.nomeCidade, c1.estado, c1.populacao);
-    printf("Carta 2 - %s (%c): %lu\n", c2.nomeCidade, c2.estado, c2.populacao);
+    switch (opcao) {
+        case 1: // População
+            valor1 = c1.populacao;
+            valor2 = c2.populacao;
+            break;
+        case 2: // Área
+            valor1 = c1.area;
+            valor2 = c2.area;
+            break;
+        case 3: // PIB
+            valor1 = c1.pib;
+            valor2 = c2.pib;
+            break;
+        case 4: // Pontos Turísticos
+            valor1 = c1.pontosTuristicos;
+            valor2 = c2.pontosTuristicos;
+            break;
+        case 5: // Densidade Populacional (Critério invertido)
+            valor1 = c1.densidadePopulacional;
+            valor2 = c2.densidadePopulacional;
+            printf("(Critério invertido: menor valor vence)\n");
+            break;
+        default:
+            printf("Opção inválida!\n");
+            return;
+    }
     
-    printf("\nResultado da Comparacão:\n");
-    if (c1.populacao > c2.populacao) {
-        printf("Carta 1 (%s) venceu!\n", c1.nomeCidade);
-    } else if (c2.populacao > c1.populacao) {
-        printf("Carta 2 (%s) venceu!\n", c2.nomeCidade);
+    printf("%s: %.2f\n", c1.nomeCidade, valor1);
+    printf("%s: %.2f\n", c2.nomeCidade, valor2);
+    
+    if (opcao == 5) {
+        if (valor1 < valor2) {
+            printf("%s venceu!\n", c1.nomeCidade);
+        } else if (valor2 < valor1) {
+            printf("%s venceu!\n", c2.nomeCidade);
+        } else {
+            printf("Empate!\n");
+        }
     } else {
-        printf("Resultado: Empate!\n");
+        if (valor1 > valor2) {
+            printf("%s venceu!\n", c1.nomeCidade);
+        } else if (valor2 > valor1) {
+            printf("%s venceu!\n", c2.nomeCidade);
+        } else {
+            printf("Empate!\n");
+        }
     }
 }
 
 int main() {
     struct CartaSuperTrunfo carta1, carta2;
+    int opcao;
     
     printf("Insira os dados da primeira carta:\n");
     carta1 = lerCarta();
     printf("\nInsira os dados da segunda carta:\n");
     carta2 = lerCarta();
     
-    compararCartas(carta1, carta2);
+    do {
+        printf("\nEscolha o atributo para comparar:\n");
+        printf("1 - População\n");
+        printf("2 - Área\n");
+        printf("3 - PIB\n");
+        printf("4 - Pontos Turísticos\n");
+        printf("5 - Densidade Populacional (menor valor vence)\n");
+        printf("0 - Sair\n");
+        printf("Opção: ");
+        scanf("%d", &opcao);
+        
+        if (opcao != 0) {
+            compararCartas(carta1, carta2, opcao);
+        }
+    } while (opcao != 0);
     
+    printf("Encerrando o jogo...\n");
     return 0;
 }
